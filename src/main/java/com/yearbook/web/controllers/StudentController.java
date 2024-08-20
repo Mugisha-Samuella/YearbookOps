@@ -1,14 +1,14 @@
 package com.yearbook.web.controllers;
 
 import com.yearbook.web.models.Student;
+import org.apache.coyote.BadRequestException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import com.yearbook.web.dto.StudentDto;
 import com.yearbook.web.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,9 +35,19 @@ public class StudentController {
        return "students-create";
    }
 
+   @PostMapping("students/create-new")
+   public ResponseEntity<Student> createStudent(@RequestBody() StudentDto dto)throws BadRequestException {
+    return  ResponseEntity.ok(studentService.create(dto));
+   }
+
    @PostMapping("students/new")
     public String saveStudent(@ModelAttribute("student") Student student){
-       StudentService.saveStudent(studentDto);
+
        return "redirect:/students";
+   }
+
+   @GetMapping("/students/{name}")
+    public ResponseEntity<Student> getStudentByName(@PathVariable("name") String name)throws Exception {
+       return ResponseEntity.ok(studentService.getStudentByName(name));
    }
 }
